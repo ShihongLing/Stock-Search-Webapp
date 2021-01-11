@@ -1,0 +1,4 @@
+import os
+
+STOCK_API_KEY = "bb0e872d31ae808377684ad47c6bdcfbab21dbab"
+NEWS_API_KEY = "37b59e454f0e4eca81034319d9b4710d"

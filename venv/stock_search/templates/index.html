@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HW6 Stock Search</title>
+    
+    <!-- My CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
+
+    <!-- Highchart Script -->
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+
+</head>
+<style>
+    body {
+        background-color: rgb(155, 142, 255);
+    }
+</style>
+<body>
+    <div class="search_area">
+        <div class="search_part">
+            <br/>
+            <br/>
+            <search_title>Stock Search</search_title>
+            <br/>
+            <br/>
+            <br/>
+            <form method="POST">
+            <search_label>Enter Stock Ticker Symbol <a style="text-align: center; color: red">*</a></search_label>
+            <input type="text"  id="Stockname" name="Stockname" value="">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <script>
+                function clearSearch(){
+                    document.getElementById("Stockname").value = "";
+                }
+
+                function empty(){
+                    if (document.getElementById("Stockname").value == ""){
+                        alert("Please fill out this field");
+                        return false;
+                     };
+                }
+            </script>
+            <button type="submit" onclick="return empty()" name="submit" value="submit" class="search_button">Search</button>
+            <button type="reset" name="reset" value="reset" class="clear_button" onclick="clearSearch()">Clear</button>
+            </form>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </div>
+        <br/>
+        <hr>
+        <br/>
+        <script>
+            function outlook(){
+                var o = document.getElementById("outlook");
+                o.style.display = "block";
+                var s = document.getElementById("summary");
+                s.style.display = "none";
+                var c = document.getElementById("charts");
+                c.style.display = "none";
+                var n = document.getElementById("news");
+                n.style.display = "none";            }
+            function summary(){
+                var o = document.getElementById("outlook");
+                o.style.display = "none";
+                var s = document.getElementById("summary");
+                s.style.display = "block";
+                var c = document.getElementById("charts");
+                c.style.display = "none";
+                var n = document.getElementById("news");
+                n.style.display = "none";
+            }
+            function chart(){
+                var o = document.getElementById("outlook");
+                o.style.display = "none";
+                var s = document.getElementById("summary");
+                s.style.display = "none";
+                var c = document.getElementById("charts");
+                c.style.display = "block";
+                var n = document.getElementById("news");
+                n.style.display = "none";
+                plot();
+                }
+            function news(){
+                var o = document.getElementById("outlook");
+                o.style.display = "none";
+                var s = document.getElementById("summary");
+                s.style.display = "none";
+                var c = document.getElementById("charts");
+                c.style.display = "none";
+                var n = document.getElementById("news");
+                n.style.display = "block";             }
+        </script>
+        {% if error != "Yes" %}
+        {% if outlook != {} %}
+        <div class="navbar">
+            <item tabindex="1" onclick="outlook()">Company Outlook</item>
+            <item tabindex="1" onclick="summary()">Stock Summary</item>
+            <item tabindex="1" onclick="chart()">Charts</item>
+            <item tabindex="1" onclick="news()">Latest News</item>
+        </div>
+        <br/>
+        <br/>
+        <form>
+            <div id="outlook" style="display: block">
+                <table>
+                    <tr>
+                        <th>Company Name</th>
+                        <td>{{outlook.name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Stock Ticker Symbol</th>
+                        <td>{{outlook.ticker}}</td>
+                    </tr>
+                    <tr>
+                        <th>Stock Exchange Code</th>
+                        <td>{{outlook.exchangeCode}}</td>
+                    </tr>
+                    <tr>
+                        <th>Company Start Date</th>
+                        <td>{{outlook.startDate}}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{outlook.description}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="summary" style="display: none">
+                <table>
+                    <tr>
+                        <th>Stock Ticker Symbol</th>
+                        <td>{{summary.ticker}}</td>
+                    </tr>
+                    <tr>
+                        <th>Trading Date</th>
+                        <td>{{summary.timestamp}}</td>
+                    </tr>
+                    <tr>
+                        <th>Previous Closing Price</th>
+                        <td>{{summary.prevClose}}</td>
+                    </tr>
+                    <tr>
+                        <th>Opening Price</th>
+                        <td>{{summary.open}}</td>
+                    </tr>
+                    <tr>
+                        <th>High Price</th>
+                        <td>{{summary.high}}</td>
+                    </tr>
+                    <tr>
+                        <th>Low Price</th>
+                        <td>{{summary.low}}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Price</th>
+                        <td>{{summary.last}}</td>
+                    </tr>
+                    <tr>
+                        <th>Change Price</th>
+                        {% if summary.change > 0 %}
+                        <td>{{summary.change}}
+                            <img src="static/GreenArrowUp.jpg" width="10" height="10">
+                        </td>
+                        {% else %}
+                        <td>{{summary.change}}
+                            <img src="static/RedArrowDown.jpg" width="10" height="10">
+                        </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Change Percent</th>
+                        {% if summary.change > 0 %}
+                        <td>{{summary.changePercent}}%
+                            <img src="static/GreenArrowUp.jpg" width="10" height="10">
+                        </td>
+                        {% else %}
+                        <td>{{summary.changePercent}}%
+                            <img src="static/RedArrowDown.jpg" width="10" height="10">
+                        </td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <th>Number of Shares Traded</th>
+                        <td>{{summary.volume}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="charts" style="height: 400px; min-width: 310px; display: none"></div>
+
+            <script>
+                function plot(){
+                Highcharts.getJSON('/stock', function (data) {
+                  // split the data set into stock_price and volume
+                  var chart_title = data.chart_title,
+                    chart_stock = data.chart_stock,
+                    data = data.charts_result,
+                    stock_price = [],
+                    volume = [],
+                    dataLength = data.length,
+                    // set the allowed units for data grouping
+                    groupingUnits = [[
+                      'day',             // unit name
+                      [1]               // allowed multiples
+                    ], [
+                      'month',
+                      [1, 2, 3, 4, 5, 6]
+                    ]],
+
+                    i = 0;
+
+                  for (i; i < dataLength; i += 1) {
+                    stock_price.push([
+                      data[i][0], // the date
+                      data[i][1], // open
+                      data[i][2], // high
+                      data[i][3], // low
+                      data[i][4] // close
+                    ]);
+
+                    volume.push([
+                      data[i][0], // the date
+                      data[i][5] // the volume
+                    ]);
+                  }
+
+                  // create the chart
+                  Highcharts.stockChart('charts', {
+                    rangeSelector: {
+                        allButtonsEnabled: true,
+                            buttons: [{
+                                type: 'week',
+                                count: 1,
+                                text: '7d',
+                                dataGrouping: {
+                                    forced: true,
+                                    units: [['day', [1]]]
+                                }
+                            }, {
+                                type: 'day',
+                                count: 15,
+                                text: '15d',
+                                dataGrouping: {
+                                    forced: true,
+                                    units: [['day', [1]]]
+                                }
+                            }, {
+                                type: 'month',
+                                text: '1m',
+                                count: 1,
+                                dataGrouping: {
+                                    forced: true,
+                                    units: [['day', [1]]]
+                                }
+                            }, {
+                                type: 'month',
+                                text: '3m',
+                                count: 3,
+                                dataGrouping: {
+                                    forced: true,
+                                    units: [['day', [1]]]
+                                }
+                            }, {
+                                type: 'month',
+                                text: '6m',
+                                count: 6,
+                                dataGrouping: {
+                                    forced: true,
+                                    units: [['day', [1]]]
+                                }
+                            }],
+                            selected: 4
+                    },
+
+                    title: {
+                      text: chart_title
+                    },
+
+                    subtitle:{
+                      useHTML:true,
+                      text:"<a href='https://www.tiingo.com'>Source: Tiingo</a>"
+                    },
+
+                    xAxis: {
+                        minPadding: 0,
+                        maxPadding: 0
+                    },
+
+                    yAxis: [{
+                      title: {
+                        text: 'Volume'
+                      },
+                      top: '0%',
+                      height: '100%',
+                      offset: 0,
+                      lineWidth: 1,
+                    }, {
+                      opposite: false,
+                      title: {
+                        text: 'Stock Price'
+                      },
+                      height: '100%',
+                      offset: 0,
+                      lineWidth: 1,
+                      resize: {
+                        enabled: false
+                      }
+                    }],
+
+                    tooltip: {
+                      split: true
+                    },
+
+                    series: [{
+                      type: 'area',
+                      name: chart_stock,
+                      data: stock_price,
+                      yAxis: 0,
+                      dataGrouping: {
+                        units: groupingUnits
+                      },
+                      fillColor: {
+                        linearGradient: {
+                          x1: 0,
+                          y1: 0,
+                          x2: 0,
+                          y2: 1
+                        },
+                        stops: [
+                          [0, Highcharts.getOptions().colors[0]],
+                          [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                      }
+                    }, {
+                      type: 'column',
+                      name: 'Volume',
+                      data: volume,
+                      yAxis: 1,
+                      dataGrouping: {
+                        units: groupingUnits
+                      }
+                    }]
+                  });
+                });
+                }
+            </script>
+
+            <div id="news" style="display: none">
+                {% for new in news %}
+                <br/>
+                <div class="current" style="background-color: white; height: 120px">
+                    <img src={{new.urlToImage}} width="110" height="110" style="float: left; border: 5px solid white">
+                    <p style="font-weight: bold">{{new.title}}</p>
+                    <p style="font-size: 10px">Published Date: {{new.publishedAt}}</p>
+                    <a href={{new.url}} style="font-size: 10px">See Original Post</a>
+                </div>
+                <br/>
+                {% endfor %}
+            </div>
+        </form>
+        {% endif %}
+        {% else %}
+        <br/>
+        <p style="font-weight:bold; font-size:20px; text-align:center">Error: No record has been found, please enter a valid symbol</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

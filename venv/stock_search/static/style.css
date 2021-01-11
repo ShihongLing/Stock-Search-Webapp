@@ -1,0 +1,129 @@
+body{
+    background-color：rgb(155, 142, 255)；
+}
+
+input[type=text]{
+    background-color: white;
+    border: 0px solid white;
+    width: 20%;
+    height: 20%;
+}
+
+img{
+    border: 5px solid white;
+}
+
+form div{
+}
+
+form .current{
+    display: block;
+}
+
+table{
+    background-color: white;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+table th{
+    width: 500px;
+    background-color: gray;
+    border: 1px solid lightgray;
+}
+
+table td{
+    width: 500px;
+    background-color: white;
+    border: 1px solid lightgray;
+}
+
+.search_area{
+    width: 60%;
+    height: 400px;
+    margin: 0 auto;
+    border-bottom: 1px solid white;
+}
+
+.search_part{
+    width: 60%
+    height: 350px;
+    margin: 0 auto;
+    background-color: lightgray;
+    text-align: center;
+}
+
+.search_part search_title{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.search_part search_label{
+     text-align: right;
+     margin-right: 5%;
+}
+
+.search_button{
+    font-size: 12px;
+    background-color: white;
+    padding: 10px 24px;
+    border: 1px solid white;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.search_button:hover{
+    background-color: gray;
+}
+
+.search_button:active{
+    border: 1px solid black;
+}
+
+.clear_button{
+    font-size: 12px;
+    background-color: white;
+    padding: 10px 24px;
+    border: 1px solid white;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.clear_button:hover{
+    background-color: gray;
+}
+
+.clear_button:active{
+    border: 1px solid black;
+}
+
+.navbar{
+    overflow: hidden;
+    background-color: lightgray;
+    width: 60%
+    margin: 0 auto;
+    height: 45px
+}
+
+.navbar item{
+    float: left;
+    text-align: center;
+    display: block;
+    font-size: 15px;
+    padding: 15px 30px;
+    text-decoration: none;
+}
+
+.navbar .clicked{
+    background-color: gray;
+}
+
+.navbar item:hover{
+    background-color: gray;
+}
+
+.navbar item:focus{
+    background: gray;
+}
+
